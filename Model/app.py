@@ -7,7 +7,7 @@ from mltu.utils.text_utils import ctc_decoder
 from mltu.configs import BaseModelConfigs
 from textblob import TextBlob
 from mltu.transformers import ImageResizer
-from flask import Flask,request
+from flask import Flask,request, jsonify
 
 class ImageToWordModel(OnnxInferenceModel):
     def __init__(self, char_list: typing.Union[str, list], *args, **kwargs):
@@ -98,9 +98,8 @@ def predict():
 
     blob = TextBlob(prediction_text)
     corrected_prediction = str(blob.correct())
-    print("Corrected prediction:", corrected_prediction)
 
-    return corrected_prediction
+    return jsonify({"text":corrected_prediction})
 
 if __name__ == '__main__':
     app.run(debug=True)
