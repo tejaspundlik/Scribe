@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, Image, Platform,StyleSheet,Text} from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { Button, ActivityIndicator} from 'react-native-paper'
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as Linking from 'expo-linking';
 import * as FileSystem from 'expo-file-system';
-import axios from 'axios'
+import axios from 'axios';
+import { AuthContext } from '../AuthContext';
+
 const Home = ({navigation}) => {
     const [image, setImage] = useState(null)
     const [uploading, setUploading] = useState(false)
     const [result, setResult] = useState(null);
+    const {userEmail} = useContext(AuthContext);
     const pickImage = async () => {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestCameraPermissionsAsync()
@@ -48,7 +51,10 @@ const Home = ({navigation}) => {
             'Content-Type': 'multipart/form-data',
           },
         });
-    
+        const addtodb = await axios.post('https://mp-hosted-backend.onrender.com/document/add', {
+                email: userEmail,
+                content:response.data.text,
+            });
         console.log(response.data.text);
         setResult(response.data.text);
         navigateToResult(response.data.text); // Call navigateToResult with response.data.text

@@ -12,6 +12,7 @@ import FirstScan from './screens/Firstscan';
 import Home from './screens/Home';
 import Share from './screens/Share';
 import Result from './screens/Result';
+import Display from './screens/Display';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -50,10 +51,11 @@ const AuthStack = () => (
 const AppTabs = () => (
   <Tab.Navigator screenOptions={{ headerShown: false }}>
     
-    <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen name="File" component={FileScreen} />
-    <Tab.Screen name="Result" component={Result} />
-    <Tab.Screen name="FirstScan" component={FirstScan} />
+    <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Homessss' }}/>
+    <Tab.Screen name="File" component={FileScreen} options={{ tabBarLabel: '123' }}/>
+    <Tab.Screen name="Result" component={Result} options={{ tabBarLabel: 'Output' }}/>
+    <Tab.Screen name="PreviousScans" component={Display} options={{ tabBarLabel: 'Previous Scans' }}/>
+    <Tab.Screen name="FirstScan" component={FirstScan} options={{ tabBarLabel: '0w8u503' }} />
   </Tab.Navigator>
 );
 

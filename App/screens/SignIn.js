@@ -18,6 +18,7 @@ const SignInScreen = ({ navigation }) => {
 
             if (response.status === 200) {
                 signIn(email);
+                
             } else {
                 Alert.alert('Error', response.data.error);
             }
