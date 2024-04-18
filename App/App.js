@@ -11,6 +11,7 @@ import Intro from './screens/Intro';
 import FirstScan from './screens/Firstscan';
 import Home from './screens/Home';
 import Share from './screens/Share';
+import Result from './screens/Result';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -35,21 +36,24 @@ const AppNavigator = () => {
 
 const AuthStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-   
-    <Stack.Screen name="Intro" component={Intro} />
+   <Stack.Screen name="Intro" component={Intro} />
     <Stack.Screen name="SignIn" component={SignInScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
-    <Stack.Screen name="Home" component={Home} />
-    <Stack.Screen name="Share" component={Share} />
+    {/* <Stack.Screen name="Home" component={Home} /> */}
     
-    <Stack.Screen name="FirstScan" component={FirstScan} />
+    
+    
+    
   </Stack.Navigator>
 );
 
 const AppTabs = () => (
   <Tab.Navigator screenOptions={{ headerShown: false }}>
+    
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="File" component={FileScreen} />
+    <Tab.Screen name="Result" component={Result} />
+    <Tab.Screen name="FirstScan" component={FirstScan} />
   </Tab.Navigator>
 );
 

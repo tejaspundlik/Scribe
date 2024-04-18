@@ -9,30 +9,7 @@ import axios from 'axios'
 const Home = ({navigation}) => {
     const [image, setImage] = useState(null)
     const [uploading, setUploading] = useState(false)
-    // const [email, setEmail] = useState('');
-    // const share = () =>{
-    //     const options ={
-    //         message:"sjhnsjn"
-    //     }
-    //     Share.open(options)
-    //         .then(res => console.log(res))
-    //         .catch(err => console.log(err));
-    // };
-    // const myCustomShare = async() =>{
-    //     const shareOptions = {
-    //         message:'this is a test msg',
-    //         url:Files.applogo,
-    //     }
-    //     try{
-    //         const response = await Share.open(shareOptions);
-    //         console.log(JSON.stringify(response));
-
-    //     }catch(error){
-    //         console.log('error = >',error);
-    //     }
-    // };
-
-
+    const [result, setResult] = useState(null);
     const pickImage = async () => {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestCameraPermissionsAsync()
@@ -54,31 +31,32 @@ const Home = ({navigation}) => {
             setImage(base64Image)
         }
     }
-
     const uploadImage = async () => {
-        setUploading(true);
-        try {
-            const base64Image = image.split(',')[1];
-
-            const formData = new FormData();
-            formData.append('image', {
-                uri: image,
-                name: 'image.jpg',
-                type: 'image/jpeg',
-            });
-
-            const response = await axios.post('http://192.168.0.223:5000/predict', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            
-            console.log(response.data.text)
-        } catch (error) {
-            console.error('Error uploading image:', error);
-        } finally {
-            setUploading(false);
-        }
+      setUploading(true);
+      try {
+        const base64Image = image.split(',')[1];
+    
+        const formData = new FormData();
+        formData.append('image', {
+          uri: image,
+          name: 'image.jpg',
+          type: 'image/jpeg',
+        });
+    
+        const response = await axios.post('http://192.168.0.102:5000/predict', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+    
+        console.log(response.data.text);
+        setResult(response.data.text);
+        navigateToResult(response.data.text); // Call navigateToResult with response.data.text
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      } finally {
+        setUploading(false);
+      }
     };
     const imageToBase64 = async (uri) => {
         let base64Image = null
@@ -94,56 +72,60 @@ const Home = ({navigation}) => {
         }
         return base64Image
     }
-    const getLatestImageFileName = async () => {
-        try {
-          const response = await fetch('http://192.168.0.102:3000/model/conv/latest-image');
-          const data = await response.json();
-          return data.fileName;
-        } catch (error) {
-          console.error('Error fetching latest image file name:', error);
-          return null;
-        }
-      };
-    const downloadImageFile = async () => {
-        try {
-          const serverUrl = 'http://192.168.0.102:3000/model/conv/output.jpeg';
-          const fileUri = FileSystem.documentDirectory + 'output.jpeg';
+    const navigateToResult = (text) => {
+      navigation.navigate('Result',{text});
+    };
+    
+    // const getLatestImageFileName = async () => {
+    //     try {
+    //       const response = await fetch('http://192.168.0.102:3000/model/conv/latest-image');
+    //       const data = await response.json();
+    //       return data.fileName;
+    //     } catch (error) {
+    //       console.error('Error fetching latest image file name:', error);
+    //       return null;
+    //     }
+    //   };
+    // const downloadImageFile = async () => {
+    //     try {
+    //       const serverUrl = 'http://192.168.0.102:3000/model/conv/output.jpeg';
+    //       const fileUri = FileSystem.documentDirectory + 'output.jpeg';
       
-          const { uri } = await FileSystem.downloadAsync(serverUrl, fileUri);
-          return uri;
-        } catch (error) {
-          console.error('Error downloading image file:', error);
-          return null;
-        }
-      };
-      const shareImageViaWhatsApp = async () => {
-        try {
-          const latestImageFileName = await getLatestImageFileName();
-          if (latestImageFileName) {
-            const fileUri = `http://192.168.0.102:3000/model/conv/${latestImageFileName}`;
-            const whatsappUrl = `whatsapp://send?text=&image=${encodeURIComponent(fileUri)}`;
-            await Linking.openURL(whatsappUrl);
-          } else {
-            console.error('Failed to get latest image file name');
-          }
-        } catch (error) {
-          console.error('Error sharing image via WhatsApp:', error);
-        }
-      };
+    //       const { uri } = await FileSystem.downloadAsync(serverUrl, fileUri);
+    //       return uri;
+    //     } catch (error) {
+    //       console.error('Error downloading image file:', error);
+    //       return null;
+    //     }
+    //   };
+    //   const shareImageViaWhatsApp = async () => {
+    //     try {
+    //       const latestImageFileName = await getLatestImageFileName();
+    //       if (latestImageFileName) {
+    //         const fileUri = `http://192.168.0.102:3000/model/conv/${latestImageFileName}`;
+    //         const whatsappUrl = `whatsapp://send?text=&image=${encodeURIComponent(fileUri)}`;
+    //         await Linking.openURL(whatsappUrl);
+    //       } else {
+    //         console.error('Failed to get latest image file name');
+    //       }
+    //     } catch (error) {
+    //       console.error('Error sharing image via WhatsApp:', error);
+    //     }
+    //   };
       
-      const shareImageViaGmail = async () => {
-        try {
-          const latestImageFileName = await getLatestImageFileName();
-          if (latestImageFileName) {
-            const fileUri = `http://192.168.0.102:3000/model/conv/${latestImageFileName}`;
-            const gmailUrl = `mailto:?subject=Image&body=&attachment=${encodeURIComponent(fileUri)}`;
-            await Linking.openURL(gmailUrl);
-          } else {
-            console.error('Failed to get latest image file name');
-          }
-        } catch (error) {    console.error('Error sharing image via Gmail:', error);
-        }
-      };
+    //   const shareImageViaGmail = async () => {
+    //     try {
+    //       const latestImageFileName = await getLatestImageFileName();
+    //       if (latestImageFileName) {
+    //         const fileUri = `http://192.168.0.102:3000/model/conv/${latestImageFileName}`;
+    //         const gmailUrl = `mailto:?subject=Image&body=&attachment=${encodeURIComponent(fileUri)}`;
+    //         await Linking.openURL(gmailUrl);
+    //       } else {
+    //         console.error('Failed to get latest image file name');
+    //       }
+    //     } catch (error) {    console.error('Error sharing image via Gmail:', error);
+    //     }
+    //   };
 
 return ( <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
 {image && <Image source={{ uri: image }} style={{ width: 350, height: 350 , top:60}} />}
@@ -160,12 +142,15 @@ return ( <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' 
     Upload Image
 </Button>
 {uploading && <ActivityIndicator animating={true} />}
-<Button mode="contained" onPress={shareImageViaWhatsApp} disabled={!image} style={styles.button}>
+<Button mode="contained" onPress={navigateToResult} disabled={!image} style={styles.button}>
+        Proceed
+      </Button>
+{/* <Button mode="contained" onPress={shareImageViaWhatsApp} disabled={!image} style={styles.button}>
   Share Image via WhatsApp
 </Button>
 <Button mode="contained" onPress={shareImageViaGmail} disabled={!image} style={styles.button}>
   Share Image via Gmail
-</Button>
+</Button> */}
            <Image
                style={styles.Eclipses}
                          source={{

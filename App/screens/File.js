@@ -12,7 +12,7 @@ const DocumentScreen = () => {
 
     const fetchDocuments = async (email) => {
         try {
-            const response = await fetch('http://192.168.0.223:3000/document/get', {
+            const response = await fetch('http://192.168.0.102:3000/document/get', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
