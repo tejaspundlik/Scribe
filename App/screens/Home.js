@@ -5,6 +5,7 @@ import { Button, ActivityIndicator} from 'react-native-paper'
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as Linking from 'expo-linking';
 import * as FileSystem from 'expo-file-system';
+import axios from 'axios'
 const Home = ({navigation}) => {
     const [image, setImage] = useState(null)
     const [uploading, setUploading] = useState(false)
@@ -61,21 +62,18 @@ const Home = ({navigation}) => {
 
             const formData = new FormData();
             formData.append('image', {
-                uri: 'data:image/jpeg;base64,' + base64Image,
+                uri: image,
                 name: 'image.jpg',
                 type: 'image/jpeg',
             });
 
-            const response = await fetch('http://192.168.0.102:3000/model/conv', {
-                method: 'POST',
-                body: formData,
+            const response = await axios.post('http://192.168.0.223:5000/predict', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
             
-
-            console.log('Server response:', response.status);
+            console.log(response.data.text)
         } catch (error) {
             console.error('Error uploading image:', error);
         } finally {
