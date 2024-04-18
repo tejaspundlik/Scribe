@@ -85,7 +85,7 @@ const Home = ({ navigation }) => {
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             {image && <Image source={{ uri: image }} style={{ width: 350, height: 350, top: 60 }} />}
             <Button mode="contained" onPress={pickImage} style={styles.button}>
-                Pick Image
+                Click Image
             </Button>
             <Button
                 mode="contained"
@@ -94,7 +94,7 @@ const Home = ({ navigation }) => {
                 disabled={!image}
                 style={styles.button}
             >
-                Upload Image
+                Convert Image
             </Button>
             {uploading && (
                 <View style={styles.loadingContainer}>
