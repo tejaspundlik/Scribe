@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import SignInScreen from './screens/SignIn';
 import RegisterScreen from './screens/Register';
 import HomeScreen from './screens/Home';
-import FileScreen from './screens/File';
 import { AuthProvider, AuthContext } from './AuthContext';
 import Intro from './screens/Intro';
 import FirstScan from './screens/Firstscan';
@@ -41,6 +40,7 @@ const AuthStack = () => (
     <Stack.Screen name="SignIn" component={SignInScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
     {/* <Stack.Screen name="Home" component={Home} /> */}
+    <Stack.Screen name="FirstScan" component={FirstScan} />
     
     
     
@@ -52,10 +52,10 @@ const AppTabs = () => (
   <Tab.Navigator screenOptions={{ headerShown: false }}>
     
     <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Homessss' }}/>
-    <Tab.Screen name="File" component={FileScreen} options={{ tabBarLabel: '123' }}/>
-    <Tab.Screen name="Result" component={Result} options={{ tabBarLabel: 'Output' }}/>
+   
+    {/* <Tab.Screen name="Result" component={Result} options={{ tabBarLabel: 'Output' }}/> */}
     <Tab.Screen name="PreviousScans" component={Display} options={{ tabBarLabel: 'Previous Scans' }}/>
-    <Tab.Screen name="FirstScan" component={FirstScan} options={{ tabBarLabel: '0w8u503' }} />
+    
   </Tab.Navigator>
 );
 

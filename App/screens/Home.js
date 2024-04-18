@@ -1,18 +1,18 @@
 import React, { useState, useContext } from 'react'
-import { View, Image, Platform,StyleSheet,Text} from 'react-native'
+import { View, Image, Platform, StyleSheet, Text, Modal } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
-import { Button, ActivityIndicator} from 'react-native-paper'
+import { Button, ActivityIndicator } from 'react-native-paper'
 import * as ImageManipulator from 'expo-image-manipulator';
-import * as Linking from 'expo-linking';
-import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
 import { AuthContext } from '../AuthContext';
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
     const [image, setImage] = useState(null)
     const [uploading, setUploading] = useState(false)
     const [result, setResult] = useState(null);
+    const [showModal, setShowModal] = useState(false);
     const {userEmail} = useContext(AuthContext);
+
     const pickImage = async () => {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestCameraPermissionsAsync()
@@ -34,36 +34,38 @@ const Home = ({navigation}) => {
             setImage(base64Image)
         }
     }
+
     const uploadImage = async () => {
-      setUploading(true);
-      try {
-        const base64Image = image.split(',')[1];
-    
-        const formData = new FormData();
-        formData.append('image', {
-          uri: image,
-          name: 'image.jpg',
-          type: 'image/jpeg',
-        });
-    
-        const response = await axios.post('http://192.168.0.102:5000/predict', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        const addtodb = await axios.post('https://mp-hosted-backend.onrender.com/document/add', {
-                email: userEmail,
-                content:response.data.text,
+        setUploading(true);
+        try {
+            const base64Image = image.split(',')[1];
+
+            const formData = new FormData();
+            formData.append('image', {
+                uri: image,
+                name: 'image.jpg',
+                type: 'image/jpeg',
             });
-        console.log(response.data.text);
-        setResult(response.data.text);
-        navigateToResult(response.data.text); // Call navigateToResult with response.data.text
-      } catch (error) {
-        console.error('Error uploading image:', error);
-      } finally {
-        setUploading(false);
-      }
+
+            const response = await axios.post('http://192.168.0.102:5000/predict', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            const addtodb = await axios.post('https://mp-hosted-backend.onrender.com/document/add', {
+                email: userEmail,
+                content: response.data.text,
+            });
+            console.log(response.data.text);
+            setResult(response.data.text);
+            setShowModal(true);
+        } catch (error) {
+            console.error('Error uploading image:', error);
+        } finally {
+            setUploading(false);
+        }
     };
+
     const imageToBase64 = async (uri) => {
         let base64Image = null
         try {
@@ -78,102 +80,45 @@ const Home = ({navigation}) => {
         }
         return base64Image
     }
-    const navigateToResult = (text) => {
-      navigation.navigate('Result',{text});
-    };
-    
-    // const getLatestImageFileName = async () => {
-    //     try {
-    //       const response = await fetch('http://192.168.0.102:3000/model/conv/latest-image');
-    //       const data = await response.json();
-    //       return data.fileName;
-    //     } catch (error) {
-    //       console.error('Error fetching latest image file name:', error);
-    //       return null;
-    //     }
-    //   };
-    // const downloadImageFile = async () => {
-    //     try {
-    //       const serverUrl = 'http://192.168.0.102:3000/model/conv/output.jpeg';
-    //       const fileUri = FileSystem.documentDirectory + 'output.jpeg';
-      
-    //       const { uri } = await FileSystem.downloadAsync(serverUrl, fileUri);
-    //       return uri;
-    //     } catch (error) {
-    //       console.error('Error downloading image file:', error);
-    //       return null;
-    //     }
-    //   };
-    //   const shareImageViaWhatsApp = async () => {
-    //     try {
-    //       const latestImageFileName = await getLatestImageFileName();
-    //       if (latestImageFileName) {
-    //         const fileUri = `http://192.168.0.102:3000/model/conv/${latestImageFileName}`;
-    //         const whatsappUrl = `whatsapp://send?text=&image=${encodeURIComponent(fileUri)}`;
-    //         await Linking.openURL(whatsappUrl);
-    //       } else {
-    //         console.error('Failed to get latest image file name');
-    //       }
-    //     } catch (error) {
-    //       console.error('Error sharing image via WhatsApp:', error);
-    //     }
-    //   };
-      
-    //   const shareImageViaGmail = async () => {
-    //     try {
-    //       const latestImageFileName = await getLatestImageFileName();
-    //       if (latestImageFileName) {
-    //         const fileUri = `http://192.168.0.102:3000/model/conv/${latestImageFileName}`;
-    //         const gmailUrl = `mailto:?subject=Image&body=&attachment=${encodeURIComponent(fileUri)}`;
-    //         await Linking.openURL(gmailUrl);
-    //       } else {
-    //         console.error('Failed to get latest image file name');
-    //       }
-    //     } catch (error) {    console.error('Error sharing image via Gmail:', error);
-    //     }
-    //   };
 
-return ( <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-{image && <Image source={{ uri: image }} style={{ width: 350, height: 350 , top:60}} />}
-<Button mode="contained" onPress={pickImage} style={ styles.button }>
-    Pick Image
-</Button>
-<Button
-    mode="contained"
-    onPress={uploadImage}
-    loading={uploading}
-    disabled={!image}
-    style={ styles.button  }
->
-    Upload Image
-</Button>
-{uploading && <ActivityIndicator animating={true} />}
-<Button mode="contained" onPress={navigateToResult} disabled={!image} style={styles.button}>
-        Proceed
-      </Button>
-{/* <Button mode="contained" onPress={shareImageViaWhatsApp} disabled={!image} style={styles.button}>
-  Share Image via WhatsApp
-</Button>
-<Button mode="contained" onPress={shareImageViaGmail} disabled={!image} style={styles.button}>
-  Share Image via Gmail
-</Button> */}
-           <Image
-               style={styles.Eclipses}
-                         source={{
-           uri: "https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ta6zkaosab-28%3A483?alt=media&token=9321fce2-14cf-4e42-a5f0-7ad8ce5037ce",
-          }}
-         />
-</View>
-//             <Button
-//                 mode="contained"
-//                 // onPress={navigateToShare}
-//                 style={styles.proceed}
-//                 disabled={!image}
-//             >
-//                 Proceed
-//             </Button>
-
-     )
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            {image && <Image source={{ uri: image }} style={{ width: 350, height: 350, top: 60 }} />}
+            <Button mode="contained" onPress={pickImage} style={styles.button}>
+                Pick Image
+            </Button>
+            <Button
+                mode="contained"
+                onPress={uploadImage}
+                loading={uploading}
+                disabled={!image}
+                style={styles.button}
+            >
+                Upload Image
+            </Button>
+            {uploading && (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#4CCBBC" />
+                </View>
+            )}
+            <Modal visible={showModal} onRequestClose={() => setShowModal(false)} animationType="fade" transparent={true}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>{result}</Text>
+                        <Button mode="contained" onPress={() => setShowModal(false)} style={styles.button}>
+                            Close
+                        </Button>
+                    </View>
+                </View>
+            </Modal>
+            <Image
+                style={styles.Eclipses}
+                source={{
+                    uri: "https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ta6zkaosab-28%3A483?alt=media&token=9321fce2-14cf-4e42-a5f0-7ad8ce5037ce",
+                }}
+            />
+        </View>
+    )
 }
 
 export default Home
@@ -183,31 +128,56 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingVertical: 15,
         paddingHorizontal: 30,
-      },
-      button: {
+    },
+    button: {
         marginTop: 20,
         backgroundColor: '#4CCBBC',
         width: 200,
         height: 60,
         padding: 10,
-       borderRadius: 100,
-        top:50,
-        fontSize:100,
+        borderRadius: 100,
+        top: 50,
+        fontSize: 100,
         alignItems: "center",
     },
-      menuItemText: {
+    menuItemText: {
         color: '#777777',
         marginLeft: 20,
         fontWeight: '600',
         fontSize: 16,
         lineHeight: 26,
-      },
-      Eclipses: {
-              position: "absolute",
-              top: -25,
-              left: -75,
-              width: 281,
-              height: 273,
-            },
-}); 
-
+    },
+    Eclipses: {
+        position: "absolute",
+        top: -25,
+        left: -75,
+        width: 281,
+        height: 273,
+    },
+    loadingContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+    },
+    modalText: {
+        fontSize: 18,
+        marginBottom: 20,
+    },
+});
