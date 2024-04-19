@@ -71,13 +71,10 @@ const Home = ({ navigation }) => {
           },
         }
       );
-      const addtodb = await axios.post(
-        "https://mp-hosted-backend.onrender.com/document/add",
-        {
-          email: userEmail,
-          content: response.data.text,
-        }
-      );
+      const addtodb = await axios.post("http://172.20.10.2:3000/document/add", {
+        email: userEmail,
+        content: response.data.text,
+      });
       console.log(response.data.text);
       setResult(response.data.text);
       setShowModal(true);

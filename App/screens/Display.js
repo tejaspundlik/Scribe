@@ -27,7 +27,7 @@ const Display = ({ navigation }) => {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "https://mp-hosted-backend.onrender.com/document/get",
+        "http://172.20.10.2:3000/document/get",
         {
           email: userEmail,
         }

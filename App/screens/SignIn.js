@@ -18,13 +18,10 @@ const SignInScreen = ({ navigation }) => {
 
   const handleSignIn = async () => {
     try {
-      const response = await axios.post(
-        "https://mp-hosted-backend.onrender.com/auth/login",
-        {
-          email: email,
-          password: password,
-        }
-      );
+      const response = await axios.post("http://172.20.10.2:3000/auth/login", {
+        email: email,
+        password: password,
+      });
 
       if (response.status === 200) {
         signIn(email);
