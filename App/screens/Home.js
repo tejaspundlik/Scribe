@@ -63,7 +63,7 @@ const Home = ({ navigation }) => {
       });
 
       const response = await axios.post(
-        "http://10.0.52.194:5000/predict",
+        "http://172.20.10.2:5000/predict",
         formData,
         {
           headers: {

@@ -95,11 +95,12 @@ def predict():
     for image in img_list:
         prediction_text += model.predict(image)
 
+    print(prediction_text)
 
     blob = TextBlob(prediction_text)
     corrected_prediction = str(blob.correct())
-
+    print(corrected_prediction)
     return jsonify({"text":corrected_prediction})
 
 if __name__ == '__main__':
-    app.run(host='10.0.52.194', port=5000)
+    app.run(host='172.20.10.2', port=5000)

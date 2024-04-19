@@ -1,12 +1,12 @@
-import React ,{useState}from "react"
-import { StyleSheet, Image, Text, View, ImageBackground } from "react-native"
-import { Button} from 'react-native-paper';
+import React, { useState } from "react";
+import { StyleSheet, Image, Text, View, ImageBackground } from "react-native";
+import { Button } from "react-native-paper";
 
 const FirstScan = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const navigateToHome = () => {
-        navigation.navigate('Home');
-    };
+  const [email, setEmail] = useState("");
+  const navigateToHome = () => {
+    navigation.navigate("SignIn");
+  };
   return (
     <View style={styles.FirstScan}>
       <Image
@@ -27,15 +27,20 @@ const FirstScan = ({ navigation }) => {
           Convert your first file now
         </Text>
         <View style={styles.buttonContainer}>
-        <Button mode="contained" labelStyle={styles.buttonLabel}  textColor="white"  onPress={navigateToHome} style={styles.button} >
-                Proceed
-            </Button>
-        </View>
+          <Button
+            mode="contained"
+            labelStyle={styles.buttonLabel}
+            textColor="white"
+            onPress={navigateToHome}
+            style={styles.button}
+          >
+            Proceed
+          </Button>
         </View>
       </View>
-    
-  )
-}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   FirstScan: {
@@ -76,15 +81,15 @@ const styles = StyleSheet.create({
     height: 709,
     boxSizing: "border-box",
   },
- 
+
   Undraw_add_notes_re_ln361: {
-    top:190,
+    top: 190,
     width: 258,
     height: 295,
   },
   ConvertYourFirstFile: {
-    top:220,
-    right:-25,
+    top: 220,
+    right: -25,
     color: "rgba(18,73,53,0.85)",
     fontSize: "30px",
     lineHeight: "30px",
@@ -92,23 +97,23 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   buttonContainer: {
-    alignItems: 'center',
-    fontWeight:"Bold", // Center the button horizontally
-},
-button: {
+    alignItems: "center",
+    fontWeight: "Bold", // Center the button horizontally
+  },
+  button: {
     marginTop: 240,
-    backgroundColor:"#4CCBBC",
-    fontSize:"50px",
+    backgroundColor: "#4CCBBC",
+    fontSize: "50px",
     width: 200,
     height: 60,
     padding: 10,
-    right:-20,
-   borderRadius: 100,
-   alignItems:"center"
-},
-buttonLabel: {
+    right: -20,
+    borderRadius: 100,
+    alignItems: "center",
+  },
+  buttonLabel: {
     fontSize: 20,
-    fontWeight: 'bold',
-},
-})
-export default FirstScan
+    fontWeight: "bold",
+  },
+});
+export default FirstScan;
