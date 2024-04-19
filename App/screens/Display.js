@@ -1,27 +1,41 @@
-import { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
-import { Card, Button } from 'react-native-paper';
-import axios from 'axios';
-import { AuthContext } from '../AuthContext';
-import * as Print from 'expo-print';
-import * as Sharing from 'expo-sharing'; // Import Sharing module
+import { useState, useEffect, useContext } from "react";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+import { Card, Button } from "react-native-paper";
+import axios from "axios";
+import { AuthContext } from "../AuthContext";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing"; // Import Sharing module
 
 const Display = ({ navigation }) => {
   const [documentData, setDocumentData] = useState([]);
   const { userEmail } = useContext(AuthContext);
 
   useEffect(() => {
-    fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 5000); // Fetch data every 5 seconds
+
+    return () => clearInterval(interval); // Clean up the interval on component unmount
   }, []);
 
   const fetchData = async () => {
     try {
-      const response = await axios.post('https://mp-hosted-backend.onrender.com/document/get', {
-        email: userEmail,
-      });
+      const response = await axios.post(
+        "https://mp-hosted-backend.onrender.com/document/get",
+        {
+          email: userEmail,
+        }
+      );
+
       setDocumentData(response.data.document);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -32,11 +46,11 @@ const Display = ({ navigation }) => {
       });
 
       await Sharing.shareAsync(uri, {
-        mimeType: 'application/pdf',
-        dialogTitle: 'Share PDF',
+        mimeType: "application/pdf",
+        dialogTitle: "Share PDF",
       });
     } catch (error) {
-      console.error('Error generating and sharing PDF:', error);
+      console.error("Error generating and sharing PDF:", error);
     }
   };
 
@@ -63,12 +77,12 @@ const Display = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 20,
   },
   card: {
-    width: '90%',
+    width: "90%",
     marginVertical: 10,
     borderRadius: 10,
     elevation: 3,
@@ -76,11 +90,11 @@ const styles = StyleSheet.create({
   cardText: {
     fontSize: 16,
     lineHeight: 24,
-    color: '#333',
+    color: "#333",
   },
   buttonContainer: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });
 
