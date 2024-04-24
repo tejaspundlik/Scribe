@@ -14,7 +14,7 @@ router.post("/get", async (req, res) => {
 
     const userDocument = await Document.findOne({ email });
     if (!userDocument) {
-      return res.status(404).json({ error: "Document not found" });
+      return res.status(205).json({ error: "Document not found" });
     }
 
     res.status(200).json({ document: userDocument.document });

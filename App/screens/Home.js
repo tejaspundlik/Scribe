@@ -63,7 +63,7 @@ const Home = ({ navigation }) => {
       });
 
       const response = await axios.post(
-        "http://192.168.0.223:5000/predict",
+        `${process.env.EXPO_PUBLIC_API_URL}:5000/predict`,
         formData,
         {
           headers: {
@@ -72,7 +72,7 @@ const Home = ({ navigation }) => {
         }
       );
       const addtodb = await axios.post(
-        "http://192.168.0.223:3000/document/add",
+        `${process.env.EXPO_PUBLIC_API_URL}:3000/document/add`,
         {
           email: userEmail,
           content: response.data.text,

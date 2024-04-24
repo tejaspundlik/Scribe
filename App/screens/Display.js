@@ -4,40 +4,47 @@ import {
   View,
   ScrollView,
   Text,
+  ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
 import { Card, Button } from "react-native-paper";
 import axios from "axios";
 import { AuthContext } from "../AuthContext";
 import * as Print from "expo-print";
-import * as Sharing from "expo-sharing"; // Import Sharing module
+import * as Sharing from "expo-sharing";
 
 const Display = ({ navigation }) => {
   const [documentData, setDocumentData] = useState([]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const { userEmail } = useContext(AuthContext);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      fetchData();
-    }, 5000); // Fetch data every 5 seconds
+    const fetchData = async () => {
+      try {
+        const response = await axios.post(
+          `${process.env.EXPO_PUBLIC_API_URL}:3000/document/get`,
+          {
+            email: userEmail,
+          }
+        );
 
-    return () => clearInterval(interval); // Clean up the interval on component unmount
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.post(
-        "http://192.168.0.223:3000/document/get",
-        {
-          email: userEmail,
+        if (response.status === 205) {
+          setDocumentData([]);
+        } else {
+          setDocumentData(response.data.document || []);
         }
-      );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
 
-      setDocumentData(response.data.document);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+    fetchData();
+    const interval = setInterval(fetchData, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const generateAndSharePdf = async (content) => {
     try {
@@ -56,20 +63,26 @@ const Display = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {documentData.map((item, index) => (
-        <View key={index}>
-          <Card style={styles.card}>
-            <Card.Content>
-              <Text style={styles.cardText}>{item.trim()}</Text>
-            </Card.Content>
-          </Card>
-          <TouchableOpacity onPress={() => generateAndSharePdf(item)}>
-            <View style={styles.buttonContainer}>
-              <Button mode="contained">Download as PDF</Button>
-            </View>
-          </TouchableOpacity>
-        </View>
-      ))}
+      {isInitialLoading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : documentData.length > 0 ? (
+        documentData.map((item, index) => (
+          <View key={index}>
+            <Card style={styles.card}>
+              <Card.Content>
+                <Text style={styles.cardText}>{item.trim()}</Text>
+              </Card.Content>
+            </Card>
+            <TouchableOpacity onPress={() => generateAndSharePdf(item)}>
+              <View style={styles.buttonContainer}>
+                <Button mode="contained">Download as PDF</Button>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ))
+      ) : (
+        <Text style={styles.noFilesText}>No files scanned yet</Text>
+      )}
     </ScrollView>
   );
 };
@@ -95,6 +108,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
     alignItems: "center",
+  },
+  noFilesText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 20,
   },
 });
 

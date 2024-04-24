@@ -19,7 +19,7 @@ const SignInScreen = ({ navigation }) => {
   const handleSignIn = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.0.223:3000/auth/login",
+        `${process.env.EXPO_PUBLIC_API_URL}:3000/auth/login`,
         {
           email: email,
           password: password,
