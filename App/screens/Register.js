@@ -110,14 +110,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontWeight: 500,
     marginBottom: 16,
     textAlign: "center",
     color: "#124935",
   },
   titlet: {
     fontSize: 30,
-    fontWeight: "SemiBold",
+    fontWeight: 300,
     marginBottom: 16,
     textAlign: "center",
     color: "#124935",
