@@ -1,12 +1,12 @@
-import React, {useState} from "react"
-import { StyleSheet, Image, Text, View, ImageBackground } from "react-native"
-import { Button} from 'react-native-paper';
+import React, { useState } from "react";
+import { StyleSheet, Image, Text, View, ImageBackground } from "react-native";
+import { Button } from "react-native-paper";
 
 const Intro = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const navigateToSignin = () => {
-        navigation.navigate('SignIn');
-    };
+  const [email, setEmail] = useState("");
+  const navigateToSignin = () => {
+    navigation.navigate("SignIn");
+  };
 
   return (
     <View style={styles.SplashScreen}>
@@ -23,7 +23,6 @@ const Intro = ({ navigation }) => {
         }}
       />
       <View style={styles.Group962}>
-        
         <Text style={styles.ConvertYourScribble}>Convert your Scribble</Text>
         <Image
           style={styles.Vector}
@@ -32,16 +31,18 @@ const Intro = ({ navigation }) => {
           }}
         />
         <Text style={styles.TextDocuments}>Text documents</Text>
-        
-          <Button mode="contained"  textColor="white"  onPress={navigateToSignin} style={styles.button} >
-                Get Started
-            </Button>
-        
+
+        <Button
+          textColor="white"
+          onPress={navigateToSignin}
+          style={styles.button}
+        >
+          Get Started
+        </Button>
       </View>
     </View>
-  )
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
   SplashScreen: {
@@ -59,16 +60,14 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    backgroundColor:"#4CCBBC",
-    fontSize:100,
+    backgroundColor: "#4CCBBC",
     alignItems: "center",
     width: 300,
     height: 53,
     padding: 10,
-   borderRadius: 100,
-   boxSizing: "border-box",
-
-},
+    borderRadius: 100,
+    boxSizing: "border-box",
+  },
   Eclipses: {
     position: "absolute",
     top: -25,
@@ -92,15 +91,13 @@ const styles = StyleSheet.create({
     width: 351,
     height: 715,
     boxSizing: "border-box",
-    right:15,
+    right: 15,
   },
-
 
   ConvertYourScribble: {
     color: "rgba(18,73,53,0.85)",
-    fontSize: "30px",
-    lineHeight: "100px",
-    fontFamily: "Poppins, sans-serif",
+    fontSize: 25,
+    paddingBottom: 25,
     fontWeight: "600",
   },
   Vector: {
@@ -109,18 +106,16 @@ const styles = StyleSheet.create({
   },
   TextDocuments: {
     color: "rgba(18,73,53,0.85)",
-    fontSize: "30px",
-    lineHeight: "100px",
-    fontFamily: "Poppins, sans-serif",
+    fontSize: 25,
+    paddingTop: 25,
     fontWeight: "600",
   },
 
   GetStarted: {
     color: "rgba(253,253,253,1)",
-    fontSize: "18px",
-    lineHeight: "18px",
-    fontFamily: "Poppins, sans-serif",
+    paddingTop: 20,
+    padding: "4px",
     fontWeight: "700",
   },
-})
+});
 export default Intro;

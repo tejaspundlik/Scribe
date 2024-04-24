@@ -27,7 +27,7 @@ const Display = ({ navigation }) => {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        "http://172.20.10.2:3000/document/get",
+        "http://192.168.0.223:3000/document/get",
         {
           email: userEmail,
         }

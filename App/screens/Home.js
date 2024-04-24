@@ -63,7 +63,7 @@ const Home = ({ navigation }) => {
       });
 
       const response = await axios.post(
-        "http://10.0.53.191:5000/predict",
+        "http://192.168.0.223:5000/predict",
         formData,
         {
           headers: {
@@ -71,10 +71,13 @@ const Home = ({ navigation }) => {
           },
         }
       );
-      const addtodb = await axios.post("http://172.20.10.2:3000/document/add", {
-        email: userEmail,
-        content: response.data.text,
-      });
+      const addtodb = await axios.post(
+        "http://192.168.0.223:3000/document/add",
+        {
+          email: userEmail,
+          content: response.data.text,
+        }
+      );
       console.log(response.data.text);
       setResult(response.data.text);
       setShowModal(true);
