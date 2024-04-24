@@ -103,4 +103,4 @@ def predict():
     return jsonify({"text":corrected_prediction})
 
 if __name__ == '__main__':
-    app.run(host='172.20.10.2', port=5000)
+    app.run(host='10.0.53.191', port=5000)
