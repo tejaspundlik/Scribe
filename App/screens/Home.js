@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { View, Image, Platform, StyleSheet, Text, Modal } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Button, ActivityIndicator } from "react-native-paper";
+import { Button, ActivityIndicator, IconButton } from "react-native-paper";
 import * as ImageManipulator from "expo-image-manipulator";
 import axios from "axios";
 import { AuthContext } from "../AuthContext";
@@ -11,6 +11,7 @@ const Home = ({ navigation }) => {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [rotation, setRotation] = useState(0);
   const { userEmail } = useContext(AuthContext);
 
   const pickImageFromCamera = async () => {
@@ -26,12 +27,13 @@ const Home = ({ navigation }) => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
+      allowsMultipleSelection: false,
     });
 
     if (!result.cancelled) {
       console.log(result.assets[0].uri);
-      const base64Image = await imageToBase64(result.assets[0].uri);
-      setImage(base64Image);
+      setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
     }
   };
 
@@ -41,12 +43,12 @@ const Home = ({ navigation }) => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
 
     if (!result.cancelled) {
       console.log(result.assets[0].uri);
-      const base64Image = await imageToBase64(result.assets[0].uri);
-      setImage(base64Image);
+      setImage(`data:image/jpeg;base64,${result.assets[0].base64}`);
     }
   };
 
@@ -88,27 +90,31 @@ const Home = ({ navigation }) => {
     }
   };
 
-  const imageToBase64 = async (uri) => {
-    let base64Image = null;
-    try {
-      const manipulatedImage = await ImageManipulator.manipulateAsync(uri, [], {
-        format: "jpeg",
-        base64: true,
-      });
-      base64Image = `data:image/jpeg;base64,${manipulatedImage.base64}`;
-    } catch (error) {
-      console.error("Error converting image to base64:", error);
-    }
-    return base64Image;
+  const rotateImage = () => {
+    setRotation((prevRotation) => (prevRotation + 90) % 360);
   };
 
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       {image && (
-        <Image
-          source={{ uri: image }}
-          style={{ width: 350, height: 350, top: 60 }}
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: image }}
+            style={{
+              width: 350,
+              height: 350,
+              top: 60,
+              transform: [{ rotate: `${rotation}deg` }],
+            }}
+          />
+          <IconButton
+            icon="rotate-right"
+            size={24}
+            color="#4CCBBC"
+            style={styles.rotateButton}
+            onPress={rotateImage}
+          />
+        </View>
       )}
       <Button
         mode="contained"
@@ -226,5 +232,16 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 18,
     marginBottom: 20,
+  },
+  imageContainer: {
+    position: "relative",
+    marginBottom: 20,
+  },
+  rotateButton: {
+    position: "absolute",
+    bottom: -20,
+    right: -20,
+    backgroundColor: "#fff",
+    borderRadius: 20,
   },
 });
