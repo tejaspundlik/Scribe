@@ -63,6 +63,9 @@ npx expo start
 ```
 Make sure you configure the `localhost` and the `PORT`
 
+
+<h1 style="text-align: center;">Documentation</h1>
+
 # App
 
 This is the React Native app built with Expo. The app includes screens for user authentication (sign-in and registration), image conversion to text, displaying previous conversions, and sharing text.
