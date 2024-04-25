@@ -1,53 +1,78 @@
-# Model Folder
+# Image to Word Model
 
-This part aims to convert images containing text into editable text using an ONNX model and OpenCV for image preprocessing. It utilizes Flask to create a simple API for text extraction from images.
+This is a Flask application that takes an image as input and predicts the text present in the image using an ONNX model. The application also performs some preprocessing on the image to extract the text lines, and post-processing to correct the predicted text using the TextBlob library.
 
 ## Project Structure
 
-The project directory contains the following files:
+### Model Structure
 
-- `app.py`: The main Python file containing the Flask app and image processing logic.
-- `configs.yaml`: Configuration file containing model parameters.
-- `model.onnx`: The ONNX model file for text recognition.
-- `requirements.txt`: A file listing the required Python dependencies.
+- `app.py`: The main Flask application file.
+- `configs.yaml`: Configuration file for the model.
+- `model.onnx`: The ONNX model file.
+- `predict.jpeg`: The input image file.
+- `requirements.txt`: File listing the required Python packages and their versions.
 
-## Prerequisites
+## Dependencies
 
-Before running the project, ensure that you have the following dependencies installed:
+The required Python packages and their versions are listed in the `requirements.txt` file. Some of the key dependencies are:
 
-- Python 3.x
-- Flask
-- mltu
-- numpy
-- opencv-python
-- tensorflow
-- textblob
+- Flask==3.0.3
+- mltu==0.1.7
+- numpy==1.26.4
+- opencv-python==4.9.0.80
+- tensorflow==2.9.3
+- textblob==0.18.0.post0
 
-You can install these dependencies using the provided `requirements.txt` file:
+## Usage
 
-`````bash
-pip install -r requirements.txt
+1. Install the required Python packages by running `pip install -r requirements.txt`.
+2. Run the Flask application by executing `python app.py`.
+3. Send a POST request to the `/predict` endpoint with an image file in the `image` field.
+4. The application will return a JSON response containing the corrected predicted text from the image.
 
-## Running the Project
+## Code Overview
 
-1. Open a terminal or command prompt and navigate to the project directory.
-2. Run the Flask app using the following command:
+### `app.py`
 
-This will start the Flask app and make it accessible at `localhost:5000`.
+- Imports the necessary libraries and modules.
+- Defines the `ImageToWordModel` class that inherits from `OnnxInferenceModel` and handles the prediction process.
+- Defines the Flask application and the `/predict` route.
+- In the `/predict` route:
+ - Reads the uploaded image file.
+ - Performs preprocessing steps on the image to extract text lines.
+ - Iterates over the extracted text lines and uses the `ImageToWordModel` to predict the text in each line.
+ - Concatenates the predicted text from all lines.
+ - Corrects the predicted text using the TextBlob library.
+ - Returns the corrected predicted text as a JSON response.
 
-## Using the API
+### `configs.yaml`
 
-To extract text from an image, send a POST request to `localhost:5000/predict` with the image file as the `image` parameter. You can use tools like Postman or cURL for this purpose.
+This file contains configuration settings for the `ImageToWordModel`, such as the character list (vocabulary) used by the model.
 
-Example cURL request:
+### `model.onnx`
 
-````bash
-curl -X POST -F 'image=@/path/to/image.jpg' localhost:5000/predict
+This is the ONNX model file used for text prediction.
 
-The API will return a JSON response containing the extracted and corrected text from the image.
+### `requirements.txt`
+
+This file lists the required Python packages and their versions for the application to run correctly.
+
+## Request and Response
+
+To send a request to the `/predict` endpoint, you can use a tool like `curl` or a web browser extension like Postman.
+
+### Bash Request
+
+```bash
+curl -X POST -F 'image=@/path/to/image.jpg' http://localhost:5000/predict
+```
+
+### Response
+
+The application will return a JSON response containing the corrected predicted text from the image
 
 ```json
 {
-  "text": "Corrected text from the image"
+    "text": "The corrected predicted text from the image"
 }
-`````
+```
