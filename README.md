@@ -25,7 +25,7 @@ Before running the project, ensure that you have the following dependencies inst
 
 You can install these dependencies using the provided `requirements.txt` file:
 
-`shell pip install -r requirements.txt `
+`````powershell pip install -r requirements.txt
 
 ## Running the Project
 
@@ -40,12 +40,12 @@ To extract text from an image, send a POST request to `localhost:5000/predict` w
 
 Example cURL request:
 
-`shell curl -X POST -F 'image=@/path/to/image.jpg' localhost:5000/predict `
+````powershell curl -X POST -F 'image=@/path/to/image.jpg' localhost:5000/predict`
 
 The API will return a JSON response containing the extracted and corrected text from the image.
 
-````json
+```json
 {
-    "text": "Corrected text from the image"
-}```
-````
+  "text": "Corrected text from the image"
+}
+`````
