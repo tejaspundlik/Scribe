@@ -2,6 +2,11 @@
 
 Scribe is a mobile application built with React Native and Expo that allows users to capture or select images and convert the text within those images to editable form. The app also provides features like displaying previous conversions, sharing converted text, and user authentication.
 
+ <video width="320" height="240" controls>
+  <source src="[movie.mp4](https://github.com/tejaspundlik/Scribe/blob/main/Demo.mp4)" type="video/mp4">
+Your browser does not support the video tag.
+</video> 
+
 ## Overview
 
 The Scribe app consists of three main components: a React Native frontend (App), a Python backend for image-to-text conversion (Model), and a Node.js backend for user authentication and document management (Backend).
