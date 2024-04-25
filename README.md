@@ -64,7 +64,7 @@ npx expo start
 Make sure you configure the `localhost` and the `PORT`
 
 
-    #Documentation
+<h1 align="center">Documentation</h1>
 
 # App
 
